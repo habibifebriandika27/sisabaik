@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="id">
+ <head>
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ <meta
+ name="description"
+ content="Formulir prototipe untuk mendaftarkan usaha sebagai penyedia makanan di SisaBaik."
+ >
+ <title>Daftar Penyedia | SisaBaik</title>
+ </head>
+ <body>
+ <a href="#konten-utama">Lewati ke konten utama</a>
+ <header>
+ <p><strong>SisaBaik</strong></p>
+ <nav aria-label="Navigasi utama">
+ <ul>
+ <li><a href="index.html">Beranda</a></li>
+ <li>
+ <a href="daftar-penyedia.html" aria-current="page">
+ Daftar sebagai penyedia
+ </a>
+ </li>
+ <li><a href="tawarkan-makanan.html">Tawarkan makanan</a></li>
+ </ul>
+ </nav>
+ </header>
+ <main id="konten-utama" tabindex="-1">
+ <h1>Daftar sebagai penyedia SisaBaik</h1>
+ <p>
+ Gunakan data fiktif selama praktikum. Formulir ini belum terhubung keserver dan basis data.
+ </p>
+ <p id="petunjuk-wajib">Kolom bertanda <strong>*</strong> wajib diisi.</p>
+ <form
+ action="daftar-penyedia.html"
+ method="get"
+ aria-describedby="petunjuk-wajib"
+ >
+ <fieldset>
+ <legend>Informasi usaha</legend>
+ <p>
+ <label for="nama-usaha">Nama usaha *</label><br>
+ <input
+ type="text"
+ id="nama-usaha"
+ name="nama_usaha"
+ autocomplete="organization"
+ minlength="3"
+ maxlength="100"
+ required
+ >
+ </p>
+ <p>
+ <label for="jenis-usaha">Jenis usaha *</label><br>
+ <select id="jenis-usaha" name="jenis_usaha" required>
+ <option value="">Pilih jenis usaha</option>
+ <option value="restoran">Restoran</option>
+ <option value="toko-roti">Toko roti</option>
+ <option value="katering">Katering</option>
+ <option value="ritel">Toko ritel</option>
+ <option value="hotel">Hotel atau penginapan</option>
+ <option value="lainnya">Lainnya</option>
+ </select>
+ </p>
+ <p>
+ <label for="deskripsi-usaha">Deskripsi singkat usaha</label><br>
+ <textarea
+ id="deskripsi-usaha"
+ name="deskripsi_usaha"
+ rows="5"
+ maxlength="500"
+ aria-describedby="bantuan-deskripsi"
+ ></textarea><br>
+ <small id="bantuan-deskripsi">
+ Jelaskan jenis produk dan jam operasional, maksimal 500 karakter.
+ </small>
+ </p>
+ </fieldset>
+ <fieldset>
+ <legend>Penanggung jawab</legend>
+ <p>
+ <label for="nama-penanggung-jawab">Nama lengkap *</label><br>
+ <input
+ type="text"
+ id="nama-penanggung-jawab"
+ name="nama_penanggung_jawab"
+ autocomplete="name"
+ minlength="3"
+ maxlength="100"
+ required>
+ </p>
+ <p>
+ <label for="email">Alamat email *</label><br>
+ <input
+ type="email"
+ id="email"
+ name="email"
+ autocomplete="email"
+ maxlength="254"
+ aria-describedby="bantuan-email"
+ required
+ ><br>
+ <small id="bantuan-email">Contoh: nama@usaha.example</small>
+ </p>
+ <p>
+ <label for="telepon">Nomor telepon *</label><br>
+ <input
+ type="tel"
+ id="telepon"
+ name="telepon"
+ autocomplete="tel"
+ inputmode="tel"
+ pattern="[0-9+() ]{8,20}"
+ aria-describedby="bantuan-telepon"
+ required
+ ><br>
+ <small id="bantuan-telepon">
+ Gunakan 8–20 karakter berupa angka, spasi, +, atau tanda kurung.
+ </small>
+ </p>
+ </fieldset>
+ <fieldset>
+ <legend>Lokasi usaha</legend>
+ <p>
+ <label for="alamat">Alamat lengkap *</label><br>
+ <textarea
+ id="alamat"
+ name="alamat"
+ rows="4"
+ autocomplete="street-address"
+ minlength="10"
+ maxlength="250"
+ required
+ ></textarea>
+ </p>
+ <p>
+ <label for="kota">Kabupaten atau kota *</label><br>
+ <input
+ type="text"
+ id="kota"
+ name="kota"
+ autocomplete="address-level2"
+ maxlength="100"
+ required
+ >
+ </p>
+ <p>
+ <label for="provinsi">Provinsi *</label><br>
+ <input
+ type="text"
+ id="provinsi"
+ name="provinsi"
+ autocomplete="address-level1"
+ maxlength="100"
+ required
+ >
+ </p>
+ <p>
+ <label for="kode-pos">Kode pos *</label><br>
+ <input
+ type="text"
+ id="kode-pos"
+ name="kode_pos"
+ autocomplete="postal-code"
+ inputmode="numeric"
+ pattern="[0-9]{5}"
+ aria-describedby="bantuan-kode-pos"
+ required
+ ><br>
+ <small id="bantuan-kode-pos">Masukkan tepat lima digit.</small>
+ </p>
+ </fieldset>
+ <fieldset>
+ <legend>Persetujuan</legend>
+ <p>
+ <input
+ type="checkbox"
+ id="persetujuan"
+ name="persetujuan"
+ value="setuju
+ required
+ >
+ <label for="persetujuan">
+ Saya menyatakan bahwa informasi latihan ini tidak menggunakan
+ data pribadi atau data usaha yang sebenarnya. *
+ </label>
+ </p>
+ </fieldset>
+ <p>
+ <button type="submit">Kirim pendaftaran latihan</button>
+ <button type="reset">Kosongkan formulir</button>
+ </p>
+ </form>
+ <section aria-labelledby="catatan-prototipe">
+ <h2 id="catatan-prototipe">Apa yang terjadi setelah tombol dikirim?</h2>
+ <p>
+ Browser memeriksa atribut validasi HTML terlebih dahulu. Jika semua
+ input valid, halaman dimuat ulang dan pasangan nama-nilai terlihat
+ pada alamat halaman. Data belum disimpan. Pada chapter backend,
+ metode sementara ini akan diganti dengan pengiriman ke server.
+ </p>
+ </section>
+ </main>
+ <footer>
+ <p>&copy; 2026 SisaBaik — Proyek pembelajaran Pengembangan Web.</p>
+ </footer>
+ </body>
+</html>
