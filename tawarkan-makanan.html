@@ -11,11 +11,12 @@
  <link rel="stylesheet" href="styles.css">
  </head>
  <body>
- <a href="#konten-utama">Lewati ke konten utama</a>
- <header>
- <p><strong>SisaBaik</strong></p>
+ <a class="skip-link" href="#konten-utama">Lewati ke konten utama</a>
+ <header class="site-header">
+ <div class="container header-layout">
+ <p class="brand">SisaBaik</p>
  <nav aria-label="Navigasi utama">
- <ul>
+ <ul class="nav-list">
  <li><a href="index.html">Beranda</a></li>
  <li><a href="daftar-penyedia.html">Daftar sebagai penyedia</a></li>
  <li>
@@ -25,20 +26,24 @@
  </li>
  </ul>
  </nav>
+ </div>
  </header>
- <main id="konten-utama" tabindex="-1">
+ <main class="container" id="konten-utama" tabindex="-1">
+ <div class="page-heading">
  <h1>Catat penawaran makanan berlebih</h1>
- <p>
- Gunakan data fiktif selama praktikum. Jangan menawarkan makanan yang
-  rusak, kedaluwarsa, tercemar, atau tidak aman dikonsumsi.
+ <p class="lead">
+Gunakan data fiktif selama praktikum. Jangan menawarkan makanan yang
+ rusak, kedaluwarsa, tercemar, atau tidak aman dikonsumsi.
  </p>
- <p id="petunjuk-wajib">Kolom bertanda <strong>*</strong> wajib diisi.</p>
+ <p class="required-note" id="petunjuk-wajib">Kolom bertanda <strong>*</strong> wajib diisi.</p>
+ </div>
  <form
+ class="form-card"
  action="tawarkan-makanan.html"
  method="get"
  aria-describedby="petunjuk-wajib"
  >
- <fieldset>
+ <fieldset class="form-section">
  <legend>Identitas makanan</legend>
  <p>
  <label for="nama-makanan">Nama makanan *</label><br>
@@ -60,7 +65,7 @@
  <option value="buah-sayur">Buah atau sayur</option>
  <option value="minuman">Minuman</option>
  <option value="bahan-pangan">Bahan pangan</option>
- <option value="lainnya">Lainnya</option>
+<option value="lainnya">Lainnya</option>
  </select>
  </p>
  <p>
@@ -79,7 +84,7 @@
  </small>
  </p>
  </fieldset>
- <fieldset>
+ <fieldset class="form-section">
  <legend>Jumlah dan skema pemulihan nilai</legend>
  <p>
  <label for="jumlah">Jumlah tersedia *</label><br>
@@ -93,7 +98,7 @@
  required
  >
  </p>
- <p>
+<p>
  <label for="satuan">Satuan *</label><br>
  <select id="satuan" name="satuan" required>
  <option value="">Pilih satuan</option>
@@ -116,7 +121,7 @@
  required
  >
  </p>
- <fieldset>
+ <fieldset class="form-section">
  <legend>Jenis penawaran *</legend>
  <p>
  <input
@@ -125,7 +130,6 @@
  name="jenis_penawaran"
  value="diskon"
  required
- >
  <label for="jenis-diskon">Dijual dengan harga diskon</label>
  </p>
  <p>
@@ -156,10 +160,10 @@
  </small>
  </p>
  </fieldset>
- <fieldset>
+ <fieldset class="form-section">
  <legend>Keamanan dan pengambilan</legend>
  <p>
- <label for="batas-pengambilan">Batas waktu pengambilan *</label><br>
+<label for="batas-pengambilan">Batas waktu pengambilan *</label><br>
  <input
  type="datetime-local"
  id="batas-pengambilan"
@@ -178,10 +182,10 @@
  required
  ></textarea>
  </p>
- <fieldset>
+ <fieldset class="form-section">
  <legend>Informasi alergen yang diketahui</legend>
  <p>
-    <input type="checkbox" id="alergen-gluten" name="alergen" value="gluten">
+ <input type="checkbox" id="alergen-gluten" name="alergen" value="gluten">
  <label for="alergen-gluten">Gluten</label>
  </p>
  <p>
@@ -193,7 +197,7 @@
  <label for="alergen-telur">Telur</label>
  </p>
  <p>
- <input type="checkbox" id="alergen-kacang" name="alergen" value="kacang">
+<input type="checkbox" id="alergen-kacang" name="alergen" value="kacang">
  <label for="alergen-kacang">Kacang</label>
  </p>
  </fieldset>
@@ -210,7 +214,7 @@
  ></textarea>
  </p>
  </fieldset>
- <fieldset>
+ <fieldset class="form-section">
  <legend>Konfirmasi keamanan pangan</legend>
  <p>
  <input
@@ -226,12 +230,12 @@
  </label>
  </p>
  </fieldset>
- <p>
- <button type="submit">Kirim penawaran latihan</button>
- <button type="reset">Kosongkan formulir</button>
+<p class="form-actions">
+ <button class="button" type="submit">Kirim penawaran latihan</button>
+ <button class="button button-secondary" type="reset">Kosongkan formulir</button>
  </p>
  </form>
- <section aria-labelledby="batas-validasi-html">
+ <section class="section" aria-labelledby="batas-validasi-html">
  <h2 id="batas-validasi-html">Batas validasi pada tahap HTML</h2>
  <p>
  Atribut HTML dapat memeriksa isian wajib, format dasar, dan rentang
@@ -242,8 +246,10 @@
  </p>
  </section>
  </main>
-  <footer>
+ <footer class="site-footer">
+ <div class="container footer-layout">
  <p>&copy; 2026 SisaBaik — Proyek pembelajaran Pengembangan Web.</p>
+ </div>
  </footer>
  </body>
 </html>
