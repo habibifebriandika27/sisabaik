@@ -2,8 +2,8 @@
 
 Dokumen ini mencatat hasil **aktual** yang dijalankan pada lingkungan ini. PostgreSQL 17
 telah dipasang secara lokal, sehingga uji integrasi HTTP + database sudah dijalankan.
-Skenario yang belum dijalankan (batas laju dan kasus daftar berisi banyak baris) ditandai
-jelas agar tidak disalahartikan sebagai lulus.
+Skenario yang belum dijalankan (konsistensi daftar berisi banyak baris) ditandai jelas agar
+tidak disalahartikan sebagai lulus.
 
 ## Lingkungan
 
@@ -38,6 +38,9 @@ jelas agar tidak disalahartikan sebagai lulus.
 | Uji integrasi Chapter 8 | `npm run auth:test` pada server aktif | **PASS: 44 pemeriksaan**; fixture penawaran `4`, pesanan `2` |
 | Akun dinonaktifkan | registrasi → login → `UPDATE pengguna SET aktif=false` → akses ulang | 401 `SESSION_REVOKED`; login ulang 401 `LOGIN_FAILED` |
 | Filter katalog publik | `GET /api/penawaran?limit=50` | 200, 4 baris, tidak ada baris yang melanggar filter status/stok/berakhir |
+| Token kedaluwarsa (HTTP) | token HS256 berumur 1 detik, tunggu 1,6 detik, `GET /api/auth/saya` | 401 `TOKEN_EXPIRED` |
+| Batas login | 21 `POST /api/auth/login` dengan kredensial salah pada server port 3100 | 429 pertama pada request ke-21, `AUTH_RATE_LIMIT`, `Retry-After: 888` |
+| Batas registrasi | 51 `POST /api/auth/registrasi` dengan body invalid pada server port 3100 | 429 pertama pada request ke-51, `REGISTRATION_RATE_LIMIT`, `Retry-After: 900` |
 | Tanpa token | `GET /api/auth/saya`, `GET /api/pesanan`, `POST /api/penawaran` | 401 `AUTH_REQUIRED`, header `WWW-Authenticate: Bearer` |
 | Token rusak | `GET /api/auth/saya` dengan `Bearer rusak` | 401 `TOKEN_INVALID` |
 | Content-Type | `POST /api/auth/logout` tanpa `application/json` | 415 `JSON_REQUIRED` |
@@ -51,7 +54,7 @@ acak sementara. Tidak ada JWT, password, atau hash yang dicetak ke dokumen ini.
 ## Matriks skenario Chapter 8
 
 Kolom **Hasil** hanya diisi untuk skenario yang benar-benar dijalankan. Skenario
-berlabel *belum dijalankan* memerlukan pengujian batas laju atau data uji tambahan.
+berlabel *belum dijalankan* memerlukan data uji tambahan.
 
 | Skenario | Ekspektasi | Hasil aktual / status |
 | --- | --- | --- |
@@ -65,7 +68,7 @@ berlabel *belum dijalankan* memerlukan pengujian batas laju atau data uji tambah
 | Penyedia belum disetujui | 403 `PROVIDER_NOT_VERIFIED` pada operasi bisnis | **Lulus** — 403 `PROVIDER_NOT_VERIFIED` |
 | `GET /api/auth/saya` tanpa token | 401 `AUTH_REQUIRED` | **Lulus** |
 | `GET /api/auth/saya` token rusak | 401 `TOKEN_INVALID` | **Lulus** |
-| Token kedaluwarsa | 401 `TOKEN_EXPIRED` | **Lulus di uji unit JWT**; uji HTTP belum |
+| Token kedaluwarsa | 401 `TOKEN_EXPIRED` | **Lulus** — uji unit JWT dan uji HTTP |
 | Logout lalu token lama dipakai | 401 `SESSION_REVOKED` | **Lulus** — 204 saat logout, kedua token lama 401 |
 | Pembeli membuat penawaran | 403 `ROLE_FORBIDDEN` | **Lulus** — 403 |
 | Penyedia membuat pesanan | 403 `ROLE_FORBIDDEN` | **Lulus** — 403 |
@@ -79,8 +82,8 @@ berlabel *belum dijalankan* memerlukan pengujian batas laju atau data uji tambah
 | Mutasi sah oleh pemilik | 200/201/204, data berubah | **Lulus** — 200/201/204 |
 | Hapus penawaran bersejarah | 409 `REFERENCE_CONFLICT` | **Lulus** — 409 |
 | Snapshot harga | Harga pesanan lama tidak berubah | **Lulus** — tetap 5000 setelah penawaran diubah ke 6000 |
-| Batas login 20 gagal | 429 `AUTH_RATE_LIMIT` + `Retry-After` | **Belum dijalankan** |
-| Batas registrasi 50 | 429 `REGISTRATION_RATE_LIMIT` + `Retry-After` | **Belum dijalankan** |
+| Batas login 20 gagal | 429 `AUTH_RATE_LIMIT` + `Retry-After` | **Lulus** — 429 pada request ke-21, `Retry-After` ada |
+| Batas registrasi 50 | 429 `REGISTRATION_RATE_LIMIT` + `Retry-After` | **Lulus** — 429 pada request ke-51, `Retry-After` ada |
 | Akun dinonaktifkan | Token lama dan login ditolak 401 | **Lulus** — 401 `SESSION_REVOKED`, login 401 `LOGIN_FAILED` |
 
 ## Cara mengulang uji integrasi
@@ -111,8 +114,9 @@ berlabel *belum dijalankan* memerlukan pengujian batas laju atau data uji tambah
    npm run auth:test
    ```
 
-6. Untuk skenario akun nonaktif dan filter katalog, jalankan pemeriksaan tambahan secara
-   manual; jangan menyalin ekspektasi sebagai hasil.
+6. Untuk skenario batas laju, jalankan pada proses/port terpisah agar login utama tidak
+   terkunci. Akun nonaktif dan filter katalog dapat diperiksa manual. Jangan menyalin
+   ekspektasi sebagai hasil.
 
 ## Bukti yang tercatat
 
@@ -123,13 +127,18 @@ berlabel *belum dijalankan* memerlukan pengujian batas laju atau data uji tambah
   2 pesanan, 2 detail pesanan, 1 pengambilan (fixture uji dipertahankan).
 - Empat akun uji memiliki `kata_sandi_hash`; satu akun (pembeli yang logout) memiliki
   `versi_token = 1`, sisanya `0`.
+- Token berumur 1 detik menghasilkan 401 `TOKEN_EXPIRED` setelah masa berlakunya lewat.
+- Batas login menghasilkan 429 `AUTH_RATE_LIMIT` pada request gagal ke-21; batas registrasi
+  menghasilkan 429 `REGISTRATION_RATE_LIMIT` pada request ke-51. Keduanya menyertakan
+  `Retry-After`.
 - Tidak ada `kata_sandi_hash`, JWT, atau nilai secret yang dicetak ke dokumen ini.
 - Tangkapan layar `auth.html` belum diambil pada sesi ini.
 
 ## Refleksi
 
-Autentikasi, otorisasi berbasis peran, kepemilikan data, pencabutan sesi, dan snapshot harga
-sudah terbukti berjalan pada PostgreSQL lokal melalui 44 pemeriksaan otomatis. Dua area
-masih perlu pengujian terpisah: batas laju (login/registrasi) dan konsistensi `COUNT`
-terhadap `SELECT` pada daftar berisi banyak baris. Klaim kelulusan untuk keduanya sengaja
-belum dibuat.
+Autentikasi, otorisasi berbasis peran, kepemilikan data, pencabutan sesi, batas laju, token
+kedaluwarsa, dan snapshot harga sudah terbukti berjalan pada PostgreSQL lokal melalui 44
+pemeriksaan otomatis ditambah lima pemeriksaan manual/terpisah. Satu area masih perlu data
+uji tambahan: konsistensi `COUNT` terhadap `SELECT` pada daftar berisi banyak baris.
+Tangkapan layar halaman `auth.html` juga belum diambil. Klaim kelulusan untuk area tersebut
+sengaja belum dibuat.
