@@ -1,8 +1,8 @@
 # Hasil Uji Chapter 8 — SisaBaik API
 
-Dokumen ini mencatat hasil **aktual** yang dapat dijalankan pada lingkungan ini. Uji
-integrasi yang membutuhkan PostgreSQL belum dijalankan karena lingkungan saat ini tidak
-memiliki server PostgreSQL, `psql`, maupun Docker. Bagian yang belum dijalankan ditandai
+Dokumen ini mencatat hasil **aktual** yang dijalankan pada lingkungan ini. PostgreSQL 17
+telah dipasang secara lokal, sehingga uji integrasi HTTP + database sudah dijalankan.
+Skenario yang belum dijalankan (batas laju dan kasus daftar berisi banyak baris) ditandai
 jelas agar tidak disalahartikan sebagai lulus.
 
 ## Lingkungan
@@ -17,8 +17,8 @@ jelas agar tidak disalahartikan sebagai lulus.
 | jsonwebtoken | 9.0.3 |
 | express-rate-limit | 8.1.0 |
 | helmet | 8.1.0 |
-| PostgreSQL | **tidak tersedia** (tidak ada service, `psql`, atau Docker) |
-| Database target | `sisabaik_dev` (belum dapat diakses) |
+| PostgreSQL | 17.11 (service `postgresql-x64-17`, port 5432) |
+| Database target | `sisabaik_dev` (dapat diakses) |
 | Branch | `feature/auth-rbac` |
 | Commit kode | `88dbb2d` |
 | Commit dokumentasi | commit terbaru pada branch `feature/auth-rbac` setelah `88dbb2d` |
@@ -33,6 +33,11 @@ jelas agar tidak disalahartikan sebagai lulus.
 | JWT | uji unit tanpa database | OK: round-trip `buatToken`/`verifikasiToken`, token diubah ditolak `TOKEN_INVALID`, token kedaluwarsa `TOKEN_EXPIRED`, audience salah `TOKEN_INVALID` |
 | bcrypt | uji unit tanpa database | OK: hash berbeda dari password, `compare` benar/salah sesuai nilai |
 | Perakitan app | server sementara pada port acak | OK: `/auth.html` 200, header keamanan Helmet ada, `/api` memakai `Cache-Control: no-store` |
+| Skema dan seed | `psql -f database/01_schema.sql` lalu `02_seed.sql` | OK: enam tabel dibuat, seed 4 pengguna, 2 penyedia, 3 penawaran, 1 pesanan, 1 detail, 1 pengambilan |
+| Migrasi Chapter 8 | `psql -f database/07_auth.sql` setelah seed | OK: kolom `kata_sandi_hash` dan `versi_token` bertambah; seluruh baris seed tetap utuh |
+| Uji integrasi Chapter 8 | `npm run auth:test` pada server aktif | **PASS: 44 pemeriksaan**; fixture penawaran `4`, pesanan `2` |
+| Akun dinonaktifkan | registrasi → login → `UPDATE pengguna SET aktif=false` → akses ulang | 401 `SESSION_REVOKED`; login ulang 401 `LOGIN_FAILED` |
+| Filter katalog publik | `GET /api/penawaran?limit=50` | 200, 4 baris, tidak ada baris yang melanggar filter status/stok/berakhir |
 | Tanpa token | `GET /api/auth/saya`, `GET /api/pesanan`, `POST /api/penawaran` | 401 `AUTH_REQUIRED`, header `WWW-Authenticate: Bearer` |
 | Token rusak | `GET /api/auth/saya` dengan `Bearer rusak` | 401 `TOKEN_INVALID` |
 | Content-Type | `POST /api/auth/logout` tanpa `application/json` | 415 `JSON_REQUIRED` |
@@ -46,48 +51,53 @@ acak sementara. Tidak ada JWT, password, atau hash yang dicetak ke dokumen ini.
 ## Matriks skenario Chapter 8
 
 Kolom **Hasil** hanya diisi untuk skenario yang benar-benar dijalankan. Skenario
-berlabel *belum dijalankan* memerlukan `sisabaik_dev` dan server aktif.
+berlabel *belum dijalankan* memerlukan pengujian batas laju atau data uji tambahan.
 
 | Skenario | Ekspektasi | Hasil aktual / status |
 | --- | --- | --- |
-| Migrasi `07_auth.sql` | Dua kolom bertambah, jumlah pesanan tetap | **Belum dijalankan** — PostgreSQL tidak tersedia |
-| Registrasi pembeli valid | 201, peran `pembeli`, hash tersimpan | **Belum dijalankan** |
-| Registrasi penyedia valid | 201, profil `menunggu` dalam satu transaksi | **Belum dijalankan** |
-| Registrasi menyisipkan `peran`/`statusVerifikasi`/`penyediaId` | 400, tidak ada akun baru | **Terverifikasi di validasi unit**; integrasi DB belum |
-| Registrasi email ganda | 409 `REGISTRATION_CONFLICT` | **Belum dijalankan** |
-| Login benar | 200, JWT + identitas aman | **Belum dijalankan** |
-| Login salah / email tidak dikenal | 401 `LOGIN_FAILED`, body sama | **Belum dijalankan** |
-| Penyedia belum disetujui | 403 `PROVIDER_NOT_VERIFIED` pada operasi bisnis | **Belum dijalankan** |
-| `GET /api/auth/saya` tanpa token | 401 `AUTH_REQUIRED` | **Lulus** (uji perakitan app) |
-| `GET /api/auth/saya` token rusak | 401 `TOKEN_INVALID` | **Lulus** (uji perakitan app) |
-| Token kedaluwarsa | 401 `TOKEN_EXPIRED` | **Lulus di uji unit JWT**; integrasi HTTP belum |
-| Logout lalu token lama dipakai | 401 `SESSION_REVOKED` | **Belum dijalankan** |
-| Pembeli membuat penawaran | 403 `ROLE_FORBIDDEN` | **Belum dijalankan** |
-| Penyedia membuat pesanan | 403 `ROLE_FORBIDDEN` | **Belum dijalankan** |
-| Body penawaran memuat `penyediaId` | 400 | **Terverifikasi di validasi unit** |
-| Body pesanan memuat `emailPembeli` | 400 | **Terverifikasi di validasi unit** |
-| Penyedia lain mengubah/menghapus penawaran | 404, data tetap | **Belum dijalankan** |
-| Pembeli lain membaca pesanan | 404 | **Belum dijalankan** |
-| `COUNT` dan `SELECT` daftar pesanan | Cakupan sama, metadata benar | **Belum dijalankan** |
-| Draft di katalog publik | 404 / tidak muncul | **Belum dijalankan** |
-| Katalog publik | Hanya aktif, stok > 0, belum berakhir, penyedia terverifikasi | **Belum dijalankan** |
-| Mutasi sah oleh pemilik | 200/201/204, data berubah | **Belum dijalankan** |
-| Hapus penawaran bersejarah | 409 `REFERENCE_CONFLICT` | **Belum dijalankan** |
-| Snapshot harga | Harga pesanan lama tidak berubah | **Belum dijalankan** |
+| Migrasi `07_auth.sql` | Dua kolom bertambah, jumlah pesanan tetap | **Lulus** — dua kolom ada, baris seed utuh |
+| Registrasi pembeli valid | 201, peran `pembeli`, hash tersimpan | **Lulus** — 201, hash tersimpan dan berbeda dari password |
+| Registrasi penyedia valid | 201, profil `menunggu` dalam satu transaksi | **Lulus** — 201, `statusVerifikasi` `menunggu` |
+| Registrasi menyisipkan `peran`/`statusVerifikasi`/`penyediaId` | 400, tidak ada akun baru | **Lulus** — 400 `VALIDATION_ERROR` |
+| Registrasi email ganda | 409 `REGISTRATION_CONFLICT` | **Lulus** — 409 |
+| Login benar | 200, JWT + identitas aman | **Lulus** — 200, hash tidak ikut respons |
+| Login salah / email tidak dikenal | 401 `LOGIN_FAILED`, body sama | **Lulus** — 401, body identik |
+| Penyedia belum disetujui | 403 `PROVIDER_NOT_VERIFIED` pada operasi bisnis | **Lulus** — 403 `PROVIDER_NOT_VERIFIED` |
+| `GET /api/auth/saya` tanpa token | 401 `AUTH_REQUIRED` | **Lulus** |
+| `GET /api/auth/saya` token rusak | 401 `TOKEN_INVALID` | **Lulus** |
+| Token kedaluwarsa | 401 `TOKEN_EXPIRED` | **Lulus di uji unit JWT**; uji HTTP belum |
+| Logout lalu token lama dipakai | 401 `SESSION_REVOKED` | **Lulus** — 204 saat logout, kedua token lama 401 |
+| Pembeli membuat penawaran | 403 `ROLE_FORBIDDEN` | **Lulus** — 403 |
+| Penyedia membuat pesanan | 403 `ROLE_FORBIDDEN` | **Lulus** — 403 |
+| Body penawaran memuat `penyediaId` | 400 | **Lulus** — 400 `VALIDATION_ERROR` |
+| Body pesanan memuat `emailPembeli` | 400 | **Lulus** — 400 `VALIDATION_ERROR` |
+| Penyedia lain mengubah/menghapus penawaran | 404, data tetap | **Lulus** — PUT dan DELETE 404 |
+| Pembeli lain membaca pesanan | 404 | **Lulus** — pembeli lain 404, penyedia terkait 200 |
+| `COUNT` dan `SELECT` daftar pesanan | Cakupan sama, metadata benar | **Lulus untuk daftar kosong** (`meta.jumlah` 0); kasus banyak baris belum diuji terpisah |
+| Draft di katalog publik | 404 / tidak muncul | **Lulus** — draft 404 saat diakses publik |
+| Katalog publik | Hanya aktif, stok > 0, belum berakhir, penyedia terverifikasi | **Lulus** — 4 baris, 0 pelanggaran filter |
+| Mutasi sah oleh pemilik | 200/201/204, data berubah | **Lulus** — 200/201/204 |
+| Hapus penawaran bersejarah | 409 `REFERENCE_CONFLICT` | **Lulus** — 409 |
+| Snapshot harga | Harga pesanan lama tidak berubah | **Lulus** — tetap 5000 setelah penawaran diubah ke 6000 |
 | Batas login 20 gagal | 429 `AUTH_RATE_LIMIT` + `Retry-After` | **Belum dijalankan** |
 | Batas registrasi 50 | 429 `REGISTRATION_RATE_LIMIT` + `Retry-After` | **Belum dijalankan** |
-| Akun dinonaktifkan | Token lama dan login ditolak 401 | **Belum dijalankan** |
+| Akun dinonaktifkan | Token lama dan login ditolak 401 | **Lulus** — 401 `SESSION_REVOKED`, login 401 `LOGIN_FAILED` |
 
-## Cara melanjutkan uji integrasi
+## Cara mengulang uji integrasi
 
-1. Pasang/hidupkan PostgreSQL lokal dan buat database `sisabaik_dev` dengan skema Chapter 6.
-2. Dari `sisabaik-api`, salin `.env.example` menjadi `.env`, isi `PGPASSWORD` dan
-   `JWT_SECRET` 64 digit hex acak.
-3. Terapkan migrasi:
+1. Pastikan service PostgreSQL berjalan dan database `sisabaik_dev` sudah ada.
+2. Dari `sisabaik-api`, isi `.env` (tidak di-commit) dengan `PGPASSWORD` dan
+   `JWT_SECRET` 64 digit hex acak. Nilai asli tidak dicatat di dokumen ini.
+3. Terapkan skema, seed, lalu migrasi:
 
    ```
+   psql -h localhost -U postgres -d sisabaik_dev -v ON_ERROR_STOP=1 -f database/01_schema.sql
+   psql -h localhost -U postgres -d sisabaik_dev -v ON_ERROR_STOP=1 -f database/02_seed.sql
    psql -h localhost -U postgres -d sisabaik_dev -v ON_ERROR_STOP=1 -f database/07_auth.sql
    ```
+
+   Jika `psql` belum ada di `PATH`, gunakan path lengkap
+   `C:\Program Files\PostgreSQL\17\bin\psql.exe`.
 
 4. Jalankan server pada satu terminal:
 
@@ -101,22 +111,25 @@ berlabel *belum dijalankan* memerlukan `sisabaik_dev` dan server aktif.
    npm run auth:test
    ```
 
-6. Lengkapi tabel di atas dengan status, `error.code`, dan efek database yang benar-benar
-   diperoleh. Jangan menyalin ekspektasi sebagai hasil.
+6. Untuk skenario akun nonaktif dan filter katalog, jalankan pemeriksaan tambahan secara
+   manual; jangan menyalin ekspektasi sebagai hasil.
 
-## Bukti yang harus dicatat setelah uji integrasi
+## Bukti yang tercatat
 
-- Output `npm run auth:test` yang berakhir `PASS: ...` beserta ID penawaran dan pesanan
-  aktual.
-- `SELECT` kolom `pengguna` tanpa menampilkan `kata_sandi_hash` atau token.
-- Jumlah pesanan sebelum/sesudah migrasi.
-- Perubahan `versi_token` sebelum dan sesudah logout.
-- Row penawaran/pesanan yang tetap utuh setelah request 403/404.
-- Tangkapan layar halaman `auth.html` yang tidak menampilkan JWT atau password.
+- Output `npm run auth:test`: `PASS: 44 pemeriksaan HTTP dan assertion kepemilikan/snapshot.`
+  dengan fixture penawaran `4` dan pesanan `2`.
+- Jumlah baris setelah seed dan migrasi: 4 pengguna, 2 penyedia, 3 penawaran, 1 pesanan,
+  1 detail pesanan, 1 pengambilan. Setelah uji: 8 pengguna, 4 penyedia, 4 penawaran,
+  2 pesanan, 2 detail pesanan, 1 pengambilan (fixture uji dipertahankan).
+- Empat akun uji memiliki `kata_sandi_hash`; satu akun (pembeli yang logout) memiliki
+  `versi_token = 1`, sisanya `0`.
+- Tidak ada `kata_sandi_hash`, JWT, atau nilai secret yang dicetak ke dokumen ini.
+- Tangkapan layar `auth.html` belum diambil pada sesi ini.
 
 ## Refleksi
 
-Kode Chapter 8 dapat diperiksa secara statis dan alur HTTP-nya dapat diuji tanpa database.
-Namun autentikasi yang sesungguhnya bergantung pada data akun, hash, versi token, dan
-cakupan SQL. Karena itu, klaim "lulus" untuk skenario tersebut baru sah setelah
-`npm run auth:test` dijalankan pada `sisabaik_dev`.
+Autentikasi, otorisasi berbasis peran, kepemilikan data, pencabutan sesi, dan snapshot harga
+sudah terbukti berjalan pada PostgreSQL lokal melalui 44 pemeriksaan otomatis. Dua area
+masih perlu pengujian terpisah: batas laju (login/registrasi) dan konsistensi `COUNT`
+terhadap `SELECT` pada daftar berisi banyak baris. Klaim kelulusan untuk keduanya sengaja
+belum dibuat.
