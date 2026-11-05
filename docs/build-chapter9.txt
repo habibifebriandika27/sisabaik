@@ -1,0 +1,15 @@
+
+> sisabaik-frontend@1.0.1 build
+> vite build
+
+vite v8.3.3 building client environment for production...
+transforming...
+✓ 23 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/assets/brand-mark-t_q2SSE9.svg    0.51 kB │ gzip:  0.29 kB
+dist/index.html                        0.72 kB │ gzip:  0.43 kB
+dist/assets/index-Do9ApoBZ.css        11.72 kB │ gzip:  3.25 kB
+dist/assets/index-Dl2c1TnV.js        100.49 kB │ gzip: 35.80 kB
+
+✓ built in 152ms

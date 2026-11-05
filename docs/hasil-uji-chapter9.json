@@ -1,0 +1,302 @@
+[
+  {
+    "nama": "Halaman baru mode pembeli: jumlah kartu",
+    "aktual": 3,
+    "harap": 3,
+    "lulus": true
+  },
+  {
+    "nama": "Halaman baru mode pembeli: ringkasan",
+    "aktual": "3/15/2",
+    "harap": "3/15/2",
+    "lulus": true
+  },
+  {
+    "nama": "Label gratis pada Sayur Layak Olah",
+    "aktual": "Gratis",
+    "harap": "Gratis",
+    "lulus": true
+  },
+  {
+    "nama": "Potensi hemat Paket Roti Sore",
+    "aktual": "Potensi hemat Rp 15.000 per paket",
+    "harap": "Potensi hemat Rp 15.000 per paket",
+    "lulus": true
+  },
+  {
+    "nama": "Semua gambar tampil",
+    "aktual": 7,
+    "harap": 7,
+    "lulus": true
+  },
+  {
+    "nama": "Pencarian LAPAU: jumlah kartu",
+    "aktual": 2,
+    "harap": 2,
+    "lulus": true
+  },
+  {
+    "nama": "Pencarian LAPAU: nama kartu",
+    "aktual": "Nasi Padang Hemat | Sayur Layak Olah",
+    "harap": "Nasi Padang Hemat | Sayur Layak Olah",
+    "lulus": true
+  },
+  {
+    "nama": "Pencarian tanpa hasil: empty state",
+    "aktual": true,
+    "harap": true,
+    "lulus": true
+  },
+  {
+    "nama": "Pencarian tanpa hasil: hint",
+    "aktual": "0 penawaran cocok.",
+    "harap": "0 penawaran cocok.",
+    "lulus": true
+  },
+  {
+    "nama": "Filter kategori roti: jumlah kartu",
+    "aktual": 1,
+    "harap": 1,
+    "lulus": true
+  },
+  {
+    "nama": "Filter kategori roti: nama kartu",
+    "aktual": "Paket Roti Sore",
+    "harap": "Paket Roti Sore",
+    "lulus": true
+  },
+  {
+    "nama": "Pilih kartu: panel pilihan tampil",
+    "aktual": true,
+    "harap": true,
+    "lulus": true
+  },
+  {
+    "nama": "Pilih kartu: fokus pada panel",
+    "aktual": "checkout-panel",
+    "harap": "checkout-panel",
+    "lulus": true
+  },
+  {
+    "nama": "Pilih kartu: stok tetap 6",
+    "aktual": "6 paket",
+    "harap": "6 paket",
+    "lulus": true
+  },
+  {
+    "nama": "Pilih kartu: pesan",
+    "aktual": "Pilihan Anda diperbarui.",
+    "harap": "Pilihan Anda diperbarui.",
+    "lulus": true
+  },
+  {
+    "nama": "Mode penyedia: jumlah kartu",
+    "aktual": 3,
+    "harap": 3,
+    "lulus": true
+  },
+  {
+    "nama": "Mode penyedia: ringkasan",
+    "aktual": "3/2/9",
+    "harap": "3/2/9",
+    "lulus": true
+  },
+  {
+    "nama": "Mode penyedia: draft tampil",
+    "aktual": true,
+    "harap": true,
+    "lulus": true
+  },
+  {
+    "nama": "Form kosong: notice tampil",
+    "aktual": true,
+    "harap": true,
+    "lulus": true
+  },
+  {
+    "nama": "Form kosong: fokus pada ringkasan",
+    "aktual": "notice",
+    "harap": "notice",
+    "lulus": true
+  },
+  {
+    "nama": "Form kosong: daftar tetap 3",
+    "aktual": 3,
+    "harap": 3,
+    "lulus": true
+  },
+  {
+    "nama": "Harga penawaran > harga normal: pesan",
+    "aktual": "Harga penawaran tidak boleh melebihi harga normal.",
+    "harap": "Harga penawaran tidak boleh melebihi harga normal.",
+    "lulus": true
+  },
+  {
+    "nama": "Harga terbalik: daftar tetap 3",
+    "aktual": 3,
+    "harap": 3,
+    "lulus": true
+  },
+  {
+    "nama": "Form valid: daftar bertambah",
+    "aktual": 4,
+    "harap": 4,
+    "lulus": true
+  },
+  {
+    "nama": "Form valid: ringkasan",
+    "aktual": "4/3/11",
+    "harap": "4/3/11",
+    "lulus": true
+  },
+  {
+    "nama": "Form valid: nama kosong kembali",
+    "aktual": "",
+    "harap": "",
+    "lulus": true
+  },
+  {
+    "nama": "Form valid: pesan sukses",
+    "aktual": "Penawaran ditambahkan ke daftar Anda.",
+    "harap": "Penawaran ditambahkan ke daftar Anda.",
+    "lulus": true
+  },
+  {
+    "nama": "Validasi stok pecahan: pesan",
+    "aktual": "stok wajib bilangan bulat 0 sampai 2147483647.",
+    "harap": "stok wajib bilangan bulat 0 sampai 2147483647.",
+    "lulus": true
+  },
+  {
+    "nama": "Validasi stok pecahan: daftar tetap 4",
+    "aktual": 4,
+    "harap": 4,
+    "lulus": true
+  },
+  {
+    "nama": "Validasi harga kosong: pesan",
+    "aktual": "hargaNormal wajib bilangan bulat 1 sampai 999999999999.",
+    "harap": "hargaNormal wajib bilangan bulat 1 sampai 999999999999.",
+    "lulus": true
+  },
+  {
+    "nama": "Validasi harga kosong: daftar tetap 4",
+    "aktual": 4,
+    "harap": 4,
+    "lulus": true
+  },
+  {
+    "nama": "Validasi tanggal lampau: pesan",
+    "aktual": "Pilih tanggal dan jam yang masih di masa depan.",
+    "harap": "Pilih tanggal dan jam yang masih di masa depan.",
+    "lulus": true
+  },
+  {
+    "nama": "Validasi tanggal lampau: daftar tetap 4",
+    "aktual": 4,
+    "harap": 4,
+    "lulus": true
+  },
+  {
+    "nama": "Validasi nama pendek: pesan",
+    "aktual": "nama harus 3 sampai 120 karakter.",
+    "harap": "nama harus 3 sampai 120 karakter.",
+    "lulus": true
+  },
+  {
+    "nama": "Validasi nama pendek: daftar tetap 4",
+    "aktual": 4,
+    "harap": 4,
+    "lulus": true
+  },
+  {
+    "nama": "Reset filter: pencarian kosong",
+    "aktual": "",
+    "harap": "",
+    "lulus": true
+  },
+  {
+    "nama": "Reset filter: kategori semua",
+    "aktual": "",
+    "harap": "",
+    "lulus": true
+  },
+  {
+    "nama": "Kembali pembeli: jumlah kartu",
+    "aktual": 4,
+    "harap": 4,
+    "lulus": true
+  },
+  {
+    "nama": "Kembali pembeli: ringkasan",
+    "aktual": "4/17/2",
+    "harap": "4/17/2",
+    "lulus": true
+  },
+  {
+    "nama": "Pindah mode: form kosong",
+    "aktual": "",
+    "harap": "",
+    "lulus": true
+  },
+  {
+    "nama": "Pindah mode: data baru masih ada",
+    "aktual": 4,
+    "harap": 4,
+    "lulus": true
+  },
+  {
+    "nama": "Refresh: jumlah kartu",
+    "aktual": 3,
+    "harap": 3,
+    "lulus": true
+  },
+  {
+    "nama": "Refresh: ringkasan",
+    "aktual": "3/15/2",
+    "harap": "3/15/2",
+    "lulus": true
+  },
+  {
+    "nama": "Tanpa scroll horizontal 375px",
+    "aktual": true,
+    "harap": true,
+    "lulus": true
+  },
+  {
+    "nama": "Tanpa scroll horizontal 768px",
+    "aktual": true,
+    "harap": true,
+    "lulus": true
+  },
+  {
+    "nama": "Tanpa scroll horizontal 1280px",
+    "aktual": true,
+    "harap": true,
+    "lulus": true
+  },
+  {
+    "nama": "Tab pertama: tautan lewati fokus",
+    "aktual": "Lewati ke konten",
+    "harap": "Lewati ke konten",
+    "lulus": true
+  },
+  {
+    "nama": "Tab pertama: tautan lewati terlihat",
+    "aktual": "none",
+    "harap": "none",
+    "lulus": true
+  },
+  {
+    "nama": "Preview 4173: jumlah kartu",
+    "aktual": 3,
+    "harap": 3,
+    "lulus": true
+  },
+  {
+    "nama": "Console tanpa error/peringatan",
+    "aktual": true,
+    "harap": true,
+    "lulus": true
+  }
+]

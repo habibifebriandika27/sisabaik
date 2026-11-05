@@ -151,6 +151,49 @@ Chapter ini menyelesaikan fondasi akun dan otorisasi. Belum ada peran admin, pan
 konfirmasi/serah terima, endpoint `pengambilan`, foto opsional, reset password, verifikasi email, MFA, refresh token,
 maupun dashboard akhir. API hanya untuk latihan lokal dengan data fiktif dan belum aman untuk publik.
 
+## Frontend Vue (Chapter 9)
+
+Chapter 9 menambahkan folder `frontend` berisi antarmuka SisaBaik berbasis Vue 3 dan Vite. Frontend ini memakai
+fixture di memori dan **belum** memanggil REST API; backend `sisabaik-api` tetap berdiri sendiri dan tidak berubah.
+Data akun, penawaran, serta status penyedia pada backend Chapter 8 tidak dipakai oleh latihan ini.
+
+### Prasyarat
+
+- Node.js 22.18.0 atau lebih baru pada seri 22, atau Node.js 24.12.0 atau lebih baru.
+- npm dan browser modern.
+
+### Menjalankan frontend
+
+Seluruh perintah frontend dijalankan dari folder `frontend`:
+
+```
+cd frontend
+npm install
+npm run dev
+```
+
+Server pengembangan mendengarkan `http://127.0.0.1:5173`. Hasil build diperiksa dengan:
+
+```
+npm run build
+npm run preview
+```
+
+Preview mendengarkan `http://127.0.0.1:4173`. Folder `frontend/node_modules` dan `frontend/dist` diabaikan Git,
+sedangkan `frontend/package-lock.json` disimpan.
+
+### Struktur dan aset
+
+- `src/App.vue`: state bersama, katalog, filter, mode tampilan, dan handler anak.
+- `src/components/`: `KartuPenawaran.vue`, `FilterPenawaran.vue`, `FormPenawaran.vue`, dan `Ikon.vue`.
+- `src/data/penawaran-latihan.js`: enam fixture dengan bentuk field DTO Chapter 8.
+- `src/lib/`: format rupiah/waktu, ketersediaan, visual kategori, dan validator form.
+- `src/assets/`: empat SVG lokal (`brand-mark.svg`, `food-bread.svg`, `food-bowl.svg`, `food-produce.svg`).
+
+Tidak ada CDN gambar, paket ikon, atau file font biner. Font memakai font sistem. Semua perubahan state hanya
+berada di memori browser; refresh mengembalikan enam fixture awal. Pemilih Tampilan pada header hanyalah
+demonstrasi state lokal, bukan autentikasi atau otorisasi.
+
 ## Integritas akademik
 
 Pengerjaan proyek berkembang mengikuti kebijakan mata kuliah. Mahasiswa wajib mampu menjelaskan setiap elemen dan
