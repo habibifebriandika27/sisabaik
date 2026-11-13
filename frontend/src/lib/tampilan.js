@@ -9,8 +9,14 @@ const tanggal = new Intl.DateTimeFormat("id-ID", {
   timeStyle: "short",
 });
 
-export const formatRupiah = (nilai) => rupiah.format(nilai);
-export const formatWaktu = (iso) => tanggal.format(new Date(iso));
+export const formatRupiah = (nilai) => {
+  try {
+    return rupiah.format(typeof nilai === "string" ? BigInt(nilai) : nilai);
+  } catch {
+    return rupiah.format(Number(nilai) || 0);
+  }
+};
+export const formatWaktu = (iso) => (iso ? tanggal.format(new Date(iso)) : "-");
 
 export function tersedia(penawaran, waktuSekarang) {
   return (

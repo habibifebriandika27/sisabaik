@@ -4,7 +4,10 @@ import {
   salah,
   penawaranValid,
   pesananValid,
+  idValid,
+  angkaValid,
 } from "./api.js";
+import { olahFoto } from "./foto.js";
 
 function emailValid(value) {
   const email = teksValid(value, "email", 3, 254).toLowerCase();
@@ -72,8 +75,8 @@ export function loginValid(body) {
   };
 }
 
-export function penawaranSesiValid(body, pengguna) {
-  objekValid(body, [
+export async function penawaranSesiValid(body, pengguna, ubah = false) {
+  const kolom = [
     "nama",
     "kategori",
     "hargaNormal",
@@ -82,8 +85,20 @@ export function penawaranSesiValid(body, pengguna) {
     "satuan",
     "status",
     "berakhirPada",
-  ]);
-  return penawaranValid({ ...body, penyediaId: pengguna.penyediaId });
+  ];
+  if (ubah) kolom.push("versi");
+  if (body && Object.hasOwn(body, "foto")) kolom.push("foto");
+  objekValid(body, kolom);
+  const data = penawaranValid({ ...body, penyediaId: pengguna.penyediaId });
+  delete data.penyediaId;
+  if (ubah) {
+    if (typeof body.versi !== "string" || !/^\d+$/.test(body.versi)) {
+      salah("versi wajib berupa string digit.");
+    }
+    data.versi = body.versi;
+  }
+  data.foto = await olahFoto(body?.foto);
+  return data;
 }
 
 export function pesananSesiValid(body, pengguna) {
@@ -93,4 +108,27 @@ export function pesananSesiValid(body, pengguna) {
     items: body.items,
   });
   return { pembeliId: pengguna.id, items: data.items };
+}
+
+export function aksiPesananValid(body) {
+  objekValid(body, ["aksi", "alasan", "pembayaranDiterima"]);
+  const aksi = teksValid(body.aksi, "aksi", 1, 20);
+  if (!["konfirmasi", "siap", "selesai", "batal", "tolak"].includes(aksi)) {
+    salah("Aksi pesanan tidak dikenal.");
+  }
+  const hasil = { aksi };
+  if (["batal", "tolak"].includes(aksi)) {
+    hasil.alasan = teksValid(body.alasan, "alasan", 3, 500);
+  } else if (body.alasan !== undefined) {
+    salah("alasan hanya untuk batal atau tolak.");
+  }
+  if (aksi === "selesai") {
+    if (typeof body.pembayaranDiterima !== "boolean") {
+      salah("pembayaranDiterima wajib boolean pada aksi selesai.");
+    }
+    hasil.pembayaranDiterima = body.pembayaranDiterima;
+  } else if (body.pembayaranDiterima !== undefined) {
+    salah("pembayaranDiterima hanya untuk aksi selesai.");
+  }
+  return hasil;
 }

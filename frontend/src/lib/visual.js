@@ -35,3 +35,24 @@ export function sisaWaktu(iso, sekarang) {
   if (menit < 1440) return `${Math.ceil(menit / 60)} jam lagi`;
   return `${Math.ceil(menit / 1440)} hari lagi`;
 }
+
+export function labelPesanan(p) {
+  if (p.status === "dibatalkan") {
+    if (p.jenisPembatalan === "ditolak-penyedia") return "Ditolak penyedia";
+    if (p.jenisPembatalan === "penyedia") return "Dibatalkan penyedia";
+    return "Dibatalkan pembeli";
+  }
+  return {
+    "menunggu-konfirmasi": "Menunggu konfirmasi",
+    dikonfirmasi: "Diterima penyedia",
+    "siap-diambil": "Siap diambil",
+    selesai: "Selesai",
+  }[p.status] ?? String(p.status || "").replaceAll("-", " ");
+}
+
+export function labelPembayaran(p) {
+  const s = p.statusPembayaran || p.pembayaran?.status;
+  if (s === "gratis") return "Gratis, tanpa pembayaran";
+  if (s === "dibayar") return "Pembayaran di tempat diterima";
+  return "Bayar di tempat saat pengambilan";
+}

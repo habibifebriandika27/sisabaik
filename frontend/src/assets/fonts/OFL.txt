@@ -1,0 +1,4 @@
+SIL OPEN FONT LICENSE
+
+Font files (PlusJakartaSans-*.woff2) are provided by the module companion package (Pendamping_Modul_10_SisaBaik_v2.0.zip).
+Copy the five WOFF2 files and the original OFL.txt into this folder to match the module design baseline.
